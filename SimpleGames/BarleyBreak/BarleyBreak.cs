@@ -4,12 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// todo: Проверка победы
 
 namespace Barley_Break
 {
     class Program
     {
+        static bool checkGeneration(int n, List<string> listNumbers)
+        {
+            return findIndex(Convert.ToString(n - 2), n, listNumbers) < findIndex(Convert.ToString(n - 3), n, listNumbers)
+                ? false : true;
+        }
+        static bool WinGame(int n, List<string> listNumbers)
+        {
+            for (int i = 0; i < n-1; i++)
+                if (String.Compare(listNumbers[i], listNumbers[i + 1]) >= 0)
+                    return false;
+            return true;
+        }
         static int findIndex(string x, int n, List <string> listNumbers)
         {
             for (int i = 0; i < n; i++)
@@ -33,8 +44,9 @@ namespace Barley_Break
         static void Main(string[] args)
         {
             int n = 9;
+            int countMoves = 0;
             Random rnd = new Random();
-            int emptyBB = rnd.Next(0, n - 1);
+            int emptyBB = n-1;
             List<BarleyBreak> bbStorage = new List<BarleyBreak>(n);
             bool[] used = new bool[n];
             List<string> listNumbers = new List<string>(n);
@@ -51,10 +63,17 @@ namespace Barley_Break
                 {
                     tmp = rnd.Next(0, n);
                 }
-                if (tmp == emptyBB) listNumbers.Add(" ");
+                if (tmp == emptyBB) listNumbers.Add("X");
                 else listNumbers.Add(Convert.ToString(tmp));
                 used[tmp] = true;
             }
+            if (!checkGeneration(n, listNumbers))
+            {
+                var tmp = listNumbers[n - 2];
+                listNumbers[n - 3] = listNumbers[n - 2];
+                listNumbers[n - 2] = tmp;
+            }
+                
             for (int i = 0; i < Math.Sqrt(n); i++)
             {
                 for (int j = 0; j < Math.Sqrt(n); j++)
@@ -63,21 +82,23 @@ namespace Barley_Break
                     count++;
                 }
             }
-            while (true)
+            while (!WinGame(n, listNumbers))
             {
                 printField(n, listNumbers);
                 playerChoice = Console.ReadLine();
                 int playerChoiceIndex = findIndex(playerChoice, n, listNumbers);
-                emptyBB = findIndex(" ", n, listNumbers);
+                emptyBB = findIndex("X", n, listNumbers);
                 if (bbStorage[emptyBB].CanSwitch(bbStorage[emptyBB].index_x, bbStorage[emptyBB].index_y,
                     bbStorage[playerChoiceIndex].index_x, bbStorage[playerChoiceIndex].index_y))
                 {
                     var tmp = listNumbers[emptyBB];
                     listNumbers[emptyBB] = listNumbers[playerChoiceIndex];
                     listNumbers[playerChoiceIndex] = tmp;
+                    countMoves++;
                 }
-                else Console.WriteLine("doesn't work!");
+                else Console.WriteLine("It's impossible! Try again.");
             }
+            Console.WriteLine("Gratz! You won for {0} moves", countMoves);
             Console.ReadKey();
         }
     }
