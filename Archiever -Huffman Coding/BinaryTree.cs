@@ -23,13 +23,20 @@ namespace Archiver
     {
         public BinaryNode root;
         private Dictionary<char, string> charDict = new Dictionary<char, string>();
+        private Dictionary<Tuple<byte, byte, byte>, string> pixelDict = new 
+            Dictionary<Tuple<byte, byte, byte>, string>();
         public BinaryTree()
         {
             root = new BinaryNode(" ");
+            root.right = new BinaryNode(" ");
+            root.left = new BinaryNode(" ");
         }
         public void Add(char value, int index)
         {
-                AddTo(root, value, "", index);
+            AddTo(root, value, "", index);
+        }
+        public void Add(Tuple<byte, byte, byte> pixel, int index) {
+            AddTo(root, pixel, "", index);
         }
         private void AddTo(BinaryNode node, char value, string code, int index)
         {
@@ -62,6 +69,37 @@ namespace Archiver
                 }
             }
         }
+        private void AddTo(BinaryNode node, Tuple<byte, byte, byte> pixel, string code, int index)
+        {
+            if (index % 2 == 0)
+            {
+                if (node.right == null)
+                {
+                    code += "0";
+                    node.right = new BinaryNode(code);
+                    pixelDict.Add(pixel, code);
+                    node.left = new BinaryNode("*");
+                }
+                else
+                {
+                    AddTo(node.left, pixel, code + "1", index);
+                }
+            }
+            else
+            {
+                if (node.left == null)
+                {
+                    code += "1";
+                    node.left = new BinaryNode(code);
+                    pixelDict.Add(pixel, code);
+                    node.right = new BinaryNode("*");
+                }
+                else
+                {
+                    AddTo(node.right, pixel, code + "0", index);
+                }
+            }
+        }
         public void PrintTree(BinaryNode node)
         {
             if (node.left != null)
@@ -80,6 +118,10 @@ namespace Archiver
         public Dictionary<char, string> GetDict()
         {
             return charDict;
+        }
+        public Dictionary<Tuple<byte, byte, byte>, string> GetPixelDict()
+        {
+            return pixelDict;
         }
     }
 }
