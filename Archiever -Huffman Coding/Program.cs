@@ -9,6 +9,81 @@ namespace Archiver
 {
     class Program
     {
+        static void Decode(Dictionary<char, string> dictDecode, bool[] boolArchiveFile, StreamWriter fileWriter)
+        {
+            string symbol = "";
+            List<string> lines = new List<string>();
+            char result = ' ';
+            bool symbolWasFound = false;
+            bool first = true;
+            int maxLength = 0;
+            foreach (var KeyValue in dictDecode)
+            {
+                if (KeyValue.Value.Length > maxLength)
+                {
+                    maxLength = KeyValue.Value.Length;
+                }
+            }
+            for (int i = 0; i < boolArchiveFile.Length - maxLength; i++)
+            {
+                symbol = "";
+                for (int j = i; j < i + maxLength; j++)
+                {
+                    if (first)
+                    {
+                        for (int k = 0; k < maxLength; k++)
+                        {
+                            symbol += (boolArchiveFile[i + k].ToString() == "True" ? 1 : 0);
+                        }
+                        first = false;
+                    }
+                    foreach (var KeyPair in dictDecode)
+                    {
+                        if (KeyPair.Value == symbol)
+                        {
+                            result = KeyPair.Key;
+                            symbolWasFound = true;
+                            break;
+                        }
+                    }
+                    if (symbolWasFound)
+                    {
+                        i += symbol.Length - 1;
+                        first = true;
+                        symbolWasFound = false;
+                        break;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            symbol = symbol.Substring(0, symbol.Length - 1);
+                        }
+                        catch (Exception e)
+                        {
+                          ;
+                        }
+                    }
+                }
+                lines.Add(result.ToString());
+            }
+            foreach (string line in lines)
+            {
+                Console.Write(line);
+                fileWriter.WriteLine(line);
+            }
+            fileWriter.Close();
+            //Console.WriteLine();
+            //for (int i = 0; i < boolArchiveFile.Length; i++)
+            //{
+            //    symbol += (boolArchiveFile[i].ToString() == "True" ? 1 : 0);
+            //}
+            //Console.WriteLine(symbol);
+            //foreach (var KeyPair in dictDecode)
+            //{
+            //    Console.WriteLine(KeyPair.Key + ": " + KeyPair.Value);
+            //}
+        }
         static List<bool> GetBoolList(Dictionary <char, string> dictDecoder,StreamReader file, string line) 
         {
             List<bool> symbols = new List<bool> ();
@@ -65,18 +140,22 @@ namespace Archiver
         }
         static void Main(string[] args)
         {
-            string path = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\Output1";
-            string pathWrite = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\Output2";
+            string path = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\Test.txt";
+            string pathWrite = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\Output";
+            string pathDecode = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\OutputDecode.txt";
             string line = "";
             StreamReader file = new StreamReader(path);
             StreamReader file2 = new StreamReader(path);
+            StreamWriter fileWriter = new StreamWriter(pathDecode);
             BinaryTree tree = new BinaryTree();
+            BitArray archiveFile = new BitArray(File.ReadAllBytes(pathWrite));
             Dictionary <char, int> symbols = new Dictionary<char, int>();
             List <char> symbolsOrdered = new List<char>();
             int indexList = 0;
-            symbols.Add(' ', 0); // Иначе не будет итераций в цикле foreach в методе CountSymbols
+            symbols.Add(' ', 0); 
+            // Иначе не будет итераций в цикле foreach в методе CountSymbols
             ReadingFile(line, file, symbols);
-            symbolsOrdered = GetCharList(symbols, symbolsOrdered);
+            symbolsOrdered = GetCharList(symbols, symbolsOrdered);  
             foreach (var e in symbolsOrdered)
             {
                 tree.Add(e, indexList);
@@ -87,8 +166,14 @@ namespace Archiver
             byte[] bytes = new byte[bit_array.Length / 8 + (bit_array.Length % 8 == 0 ? 0 : 1)];
             bit_array.CopyTo(bytes, 0);
             File.WriteAllBytes(pathWrite, bytes);
+            bool[] boolArchiveFile = new bool[archiveFile.Length];
+            archiveFile.CopyTo(boolArchiveFile, 0);
+            //  Decode(tree.GetDict(), boolArchiveFile, fileWriter);
+            ImageCompression image = new ImageCompression();
+            image.Encode();
             Console.WriteLine("Готово!");
             Console.ReadKey();
         }
     }
 }
+//todo: Добавить дешефрование
