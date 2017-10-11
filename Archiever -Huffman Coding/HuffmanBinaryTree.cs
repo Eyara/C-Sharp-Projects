@@ -19,24 +19,32 @@ namespace Archiver
         }
     }
 
-    class BinaryTree
+    class BinaryTreeHuffman
     {
         public BinaryNode root;
         private Dictionary<char, string> charDict = new Dictionary<char, string>();
         private Dictionary<Tuple<byte, byte, byte>, string> pixelDict = new 
             Dictionary<Tuple<byte, byte, byte>, string>();
-        public BinaryTree()
+        private Dictionary<Int16, string> sampleDict = new Dictionary<Int16, string>();
+
+        public BinaryTreeHuffman()
         {
             root = new BinaryNode(" ");
-            root.right = new BinaryNode(" ");
             root.left = new BinaryNode(" ");
+            root.right = new BinaryNode(" ");
         }
+
         public void Add(char value, int index)
         {
             AddTo(root, value, "", index);
         }
-        public void Add(Tuple<byte, byte, byte> pixel, int index) {
+        public void Add(Tuple<byte, byte, byte> pixel, int index)
+        {
             AddTo(root, pixel, "", index);
+        }
+        public void Add(Int16 sample, int index)
+        {
+            AddTo(root, sample, "", index);
         }
         private void AddTo(BinaryNode node, char value, string code, int index)
         {
@@ -100,6 +108,51 @@ namespace Archiver
                 }
             }
         }
+        private void AddTo(BinaryNode node, Int16 sample, string code, int index)
+        {
+            if (index % 2 == 0)
+            {
+                if (node.right == null)
+                {
+                    code += "0";
+                    node.right = new BinaryNode(code);
+                    sampleDict.Add(sample, code);
+                    node.left = new BinaryNode("*");
+                }
+                else
+                {
+                    AddTo(node.left, sample, code + "1", index);
+                }
+            }
+            else
+            {
+                if (node.left == null)
+                {
+                    code += "1";
+                    node.left = new BinaryNode(code);
+                    sampleDict.Add(sample, code);
+                    node.right = new BinaryNode("*");
+                }
+                else
+                {
+                    AddTo(node.right, sample, code + "0", index);
+                }
+            }
+        }
+
+        public Dictionary<char, string> GetDict()
+        {
+            return charDict;
+        }
+        public Dictionary<Tuple<byte, byte, byte>, string> GetPixelDict()
+        {
+            return pixelDict;
+        }
+        public Dictionary<Int16, string> GetSampleDict()
+        {
+            return sampleDict;
+        }
+
         public void PrintTree(BinaryNode node)
         {
             if (node.left != null)
@@ -114,14 +167,6 @@ namespace Archiver
                     Console.WriteLine(node.right.value);
                 PrintTree(node.right);
             }
-        }
-        public Dictionary<char, string> GetDict()
-        {
-            return charDict;
-        }
-        public Dictionary<Tuple<byte, byte, byte>, string> GetPixelDict()
-        {
-            return pixelDict;
         }
     }
 }
