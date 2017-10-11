@@ -23,7 +23,7 @@ namespace Archiver
 
         public ImageCompression()
         {
-            path = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\Test1.jpg";
+            path = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\Lenna.png";
             pathWrite = @"C:\Users\Eyara\Desktop\Программирование\C#\Starter\Archiver\Archiver\OutputImage.txt";
             file = Image.FromFile(path);
             image1 = new Bitmap(file);
@@ -60,16 +60,21 @@ namespace Archiver
         private Dictionary <Tuple <byte, byte, byte>, int> GetDict ()
         {
             pixels = GetPix();
+
             pixelsFrequency.Add(pixels[0], 0);
             for (int i = 1; i < pixels.Count; i++)
             {
                 CountPixels(pixels[i], pixelsFrequency);
             }
+
+            pixelsFrequency = 
+                pixelsFrequency.OrderBy(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+            pixelsFrequency = pixelsFrequency.Reverse().ToDictionary(pair => pair.Key, pair => pair.Value);
             return pixelsFrequency;
         }
         public void Encode()
         {
-            BinaryTree tree = new BinaryTree();
+            BinaryTreeHuffman tree = new BinaryTreeHuffman();
             int index = 0;
             var pixFreq = GetDict();
             foreach (var e in pixFreq.Keys)
@@ -107,7 +112,7 @@ namespace Archiver
         } 
         public void Decode()
         {
-            BinaryTree tree = new BinaryTree();
+            BinaryTreeHuffman tree = new BinaryTreeHuffman();
             Bitmap newImage = new Bitmap(image1.Width, image1.Height);
             int index = 0;
             var pixFreq = GetDict();
@@ -202,3 +207,5 @@ namespace Archiver
         }
     }
 }
+// Построено дерево Хаффмана, получен словарь, получен сжатый файл. 
+// Написан рабочий декодер.
