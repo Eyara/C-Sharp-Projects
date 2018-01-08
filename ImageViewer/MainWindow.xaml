@@ -1,0 +1,97 @@
+﻿<Window x:Class="ImageViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer"
+        mc:Ignorable="d"
+        Title="ImageViewer" Background="Black" Width="600" Height="600" SizeChanged="Window_SizeChanged">
+    <DockPanel>
+        <Menu DockPanel.Dock="Left" Width="184">
+            <MenuItem Name="fileHeader">
+                <MenuItem.Header>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Padding="80 10 0 0" Grid.Column="0"> File</TextBlock>
+                            <Image Width="40" Height="40" Margin="0"
+                                   Grid.Column="0" Source="img/File.png/"/>
+                        </Grid>
+                    </StackPanel>
+                </MenuItem.Header>
+                <MenuItem Header="Load" Click="LoadClick"/>
+                <MenuItem Header="Save" Click="SaveClick"/>
+            </MenuItem>
+            <MenuItem Name="editHeader" >
+                <MenuItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Padding="80 10 0 0" Grid.Column="0"> Edit</TextBlock>
+                        <Image Width="40" Height="40" Source="img\Edit.png"/>
+                    </Grid>
+                </MenuItem.Header>
+                <MenuItem Header="Blur" Click="BlurClick"/>
+            </MenuItem>
+            <MenuItem Click="RotateClick" Name="rotateHeader">
+                <MenuItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Width="40" Height="40" Grid.Column="0" Margin="30 0 0 0"
+                               Source="img\Rotate.png"/>
+                        <TextBlock Padding="10 15 0 0" Grid.Column="1"> Rotate</TextBlock>
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Name="filterHeader">
+                <MenuItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Width="40" Height="40" Grid.Column="0" Margin="30 0 0 0"
+                               Source="img\Filter.png,"/>
+                        <TextBlock Padding="5 10 0 0" Grid.Column="1"> Filter </TextBlock>
+                    </Grid>
+                </MenuItem.Header>
+                    <MenuItem Header="Greyscale" Click="GreyscaleClick"/>
+                    <MenuItem Header="Sepia" Click="SepiaClick"/>
+                    <MenuItem Header="Tinky Winky" Click="VioletClick"/>
+                    <MenuItem Header="Dipsy" Click="GreenyClick"/>
+                    <MenuItem Header="LaaLaa" Click="YellowClick"/>
+                    <MenuItem Header="Po" Click="PinkClick"/>
+            </MenuItem>
+            <MenuItem Click="InfoClick" Name="infoHeader">
+                <MenuItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Padding="10 10 0 0" Grid.Column="1"> Info </TextBlock>
+                        <Image Width="40" Height="40" Margin ="30 0 0 0" Grid.Column="0"
+                               Source ="img\Info.png"/>
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="269*"/>
+                <ColumnDefinition Width="323*"/>
+            </Grid.ColumnDefinitions>
+            <Image Margin="10,47,10,71" Name="imgPhoto" 
+                 Stretch="Fill" Grid.ColumnSpan="2"/>
+        </Grid>
+    </DockPanel>
+</Window>
+
+    
